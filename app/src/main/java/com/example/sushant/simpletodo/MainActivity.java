@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> id = new ArrayList<String>();
         ArrayList<String> pending = new ArrayList<>();
         ArrayList<String> done = new ArrayList<>();
-        ArrayList<String> final_array = new ArrayList<String>();
+        ProgressBar progressBar;
         int section_no;
         private String TAG = "Fragment";
         private static final String ARG_SECTION_NUMBER = "section_number";
@@ -157,8 +158,6 @@ public class MainActivity extends AppCompatActivity {
             super.setHasOptionsMenu(true);
         }
 
-
-
         protected void showInputDialog() {
 
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
@@ -178,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                             //value.add(newEntry);
                             mAdapter.notifyDataSetChanged();
-
                         }
                     })
                     .setNegativeButton("Cancel",
@@ -191,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog alert = alertDialogBuilder.create();
             alert.show();
         }
-
 
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -218,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
             //mRecyclerView.setHasFixedSize(true);
 
+            progressBar = (ProgressBar)rootView.findViewById(R.id.pbar);
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
             mRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -254,9 +252,19 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
+            protected void onProgressUpdate(Integer... values) {
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setProgress(values[0]);
+                super.onProgressUpdate(values);
+            }
+
+            @Override
             protected void onPostExecute(ArrayList<String> strings) {
 
+                progressBar.setVisibility(View.INVISIBLE);
 
+                done.clear();
+                pending.clear();
                 int n = strings.size();
                 for(int i =0; i<n;i++){
                     if(id.get(i).equals("0")) {
