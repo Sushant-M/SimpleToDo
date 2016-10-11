@@ -417,6 +417,7 @@ public class MainActivity extends AppCompatActivity {
                 long no = sqLiteDatabase.insert(ItemsContract.TABLE_NAME,
                         null,
                         contentValues);
+                sqLiteDatabase.close();
                 return null;
             }
         }
