@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -122,17 +123,19 @@ public class MainActivity extends AppCompatActivity {
          */
         String item_data = null;
         ArrayList<String> value = new ArrayList<String>();
-        int valuecounter =0;
-        String[] IDs = new String[20];
-        String[] Pending = new String[20];
-        String[] Done = new String[20];
+        ArrayList<String> id = new ArrayList<String>();
+        ArrayList<String> final_array = new ArrayList<String>();
+        int section_no;
         private String TAG = "Fragment";
         private static final String ARG_SECTION_NUMBER = "section_number";
         Adapter mAdapter;
         RecyclerView mRecyclerView;
+        private SwipeRefreshLayout mSwipeRefreshLayout;
 
         public PlaceholderFragment() {
         }
+
+
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -156,14 +159,12 @@ public class MainActivity extends AppCompatActivity {
 
         protected void showInputDialog() {
 
-            // get prompts.xml view
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
             View promptView = layoutInflater.inflate(R.layout.prompts, null);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
             alertDialogBuilder.setView(promptView);
 
             final EditText editText = (EditText) promptView.findViewById(R.id.editTextDialogUserInput);
-            // setup a dialog window
             alertDialogBuilder.setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -197,7 +198,6 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             switch (id){
                 case R.id.action_add:
-                    Log.d(TAG,"lolol");
                     showInputDialog();
             }
             return super.onOptionsItemSelected(item);
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            int value = getArguments().getInt(ARG_SECTION_NUMBER);
+            section_no = getArguments().getInt(ARG_SECTION_NUMBER);
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
             //mRecyclerView.setHasFixedSize(true);
@@ -217,10 +217,26 @@ public class MainActivity extends AppCompatActivity {
 
 
             TextView text = (TextView)rootView.findViewById(R.id.type);
-            text.setText("Hello from side" + value);
-            new GetData().execute();
+            if(section_no == 1){
+                text.setText("Pending Tasks");
+            }
+            if(section_no == 2){
+                text.setText("Done Tasks");
+            }
+            mSwipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.swiperefresh);
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refresh();
+                }
+            });
+            refresh();
 
             return rootView;
+        }
+
+        public void refresh(){
+            new GetData().execute();
         }
 
 
@@ -233,10 +249,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(ArrayList<String> strings) {
-
-                mAdapter = new Adapter(strings);
+                mAdapter = new Adapter(strings,getActivity());
                 mRecyclerView.setAdapter(mAdapter);
                 value = strings;
+                if(mSwipeRefreshLayout.isRefreshing()){
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
                 super.onPostExecute(strings);
             }
 
@@ -266,9 +284,7 @@ public class MainActivity extends AppCompatActivity {
 
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                        // But it does make debugging a *lot* easier if you print out the completed
-                        // buffer for debugging.
+
                         buffer.append(line + "\n");
                     }
 
@@ -277,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
                         return null;
                     }
                     item_data = buffer.toString();
-                    //Log.d(TAG,item_data);
+
                 }catch (IOException e){
                     e.printStackTrace();
                 }finally {
@@ -294,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 try {
-                    //ParseType(item_data);
+                    ParseType(item_data);
                     return ParseJSON(item_data);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -302,9 +318,8 @@ public class MainActivity extends AppCompatActivity {
                 return new ArrayList<>();
             }
 
-            //Fix up later
 
-            public String[] ParseType(String rawData) throws JSONException{
+            public ArrayList<String> ParseType(String rawData) throws JSONException{
                 String key = "data";
                 if(rawData != null) {
                     JSONObject Obj = new JSONObject(rawData);
@@ -317,10 +332,10 @@ public class MainActivity extends AppCompatActivity {
                         parsedData.add(i,temp);
                         Log.d(TAG, temp);
                     }
-                    //IDs = parsedData;
-                    //return parsedData;
+                    id = parsedData;
+                    return parsedData;
                 }
-                return new String[0];
+                return new ArrayList<>();
             }
             }
 

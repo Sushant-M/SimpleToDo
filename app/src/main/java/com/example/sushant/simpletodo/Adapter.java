@@ -1,7 +1,9 @@
 package com.example.sushant.simpletodo;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,18 +17,13 @@ import java.util.ArrayList;
  * Created by sushant on 10/10/16.
  */
 
-/**
- * Provide views to RecyclerView with data from mDataSet.
- */
+
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     private static final String TAG = "CustomAdapter";
 
+    private Context context;
     private ArrayList<String> mDataSet;
 
-
-    /**
-     * Provide a reference to the type of views that you are using (custom ViewHolder)
-     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
 
@@ -47,38 +44,47 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         }
     }
 
-    /**
-     * Initialize the dataset of the Adapter.
-     *
-     * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
-     */
-    public Adapter(ArrayList<String> dataSet) {
+
+    public Adapter(ArrayList<String> dataSet, Context con) {
         mDataSet = dataSet;
+        context = con;
     }
     public View v;
-    // Create new views (invoked by the layout manager)
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        // Create a new view.
          v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.text_item, viewGroup, false);
 
         return new ViewHolder(v);
     }
-    // Replace the contents of a view (invoked by the layout manager)
+
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        //Log.d(TAG, "Element " + position + " set.");
-
-        // Get element from your dataset at this position and replace the contents of the view
-        // with that element
         viewHolder.getTextView().setText(mDataSet.get(position));
 
         viewHolder.textView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                mDataSet.remove(position);
-                notifyDataSetChanged();
+
+                LayoutInflater layoutInflater = LayoutInflater.from(context);
+                View promptView = layoutInflater.inflate(R.layout.promt_delete, null);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                alertDialogBuilder.setView(promptView);
+                alertDialogBuilder.setCancelable(false)
+                        .setPositiveButton(R.string.del, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                mDataSet.remove(position);
+                                notifyDataSetChanged();
+                            }
+                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                AlertDialog alert = alertDialogBuilder.create();
+                alert.show();
                 return false;
             }
         });
@@ -86,7 +92,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     }
 
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mDataSet.size();

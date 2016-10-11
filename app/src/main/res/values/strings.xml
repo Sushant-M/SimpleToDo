@@ -8,4 +8,6 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="add_entry">Add Entry</string>
     <string name="addintolist">Add Entry</string>
+    <string name="delete_entry">Delete entry?</string>
+    <string name="del">Delete</string>
 </resources>
