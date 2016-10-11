@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     private static final String TAG = "CustomAdapter";
 
-    private String[] mDataSet;
+    private ArrayList<String> mDataSet;
 
 
     /**
@@ -52,7 +52,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
      *
      * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
      */
-    public Adapter(String[] dataSet) {
+    public Adapter(ArrayList<String> dataSet) {
         mDataSet = dataSet;
     }
     public View v;
@@ -72,12 +72,13 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         // Get element from your dataset at this position and replace the contents of the view
         // with that element
-        viewHolder.getTextView().setText(mDataSet[position]);
+        viewHolder.getTextView().setText(mDataSet.get(position));
 
         viewHolder.textView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-
+                mDataSet.remove(position);
+                notifyDataSetChanged();
                 return false;
             }
         });
@@ -88,6 +89,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataSet.length;
+        return mDataSet.size();
     }
 }

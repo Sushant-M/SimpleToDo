@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
          * fragment.
          */
         String item_data = null;
-        String value[] = new String[20];
+        ArrayList<String> value = new ArrayList<String>();
         int valuecounter =0;
         String[] IDs = new String[20];
         String[] Pending = new String[20];
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             String newEntry = editText.getText().toString();
                             Log.d(TAG,newEntry);
-                            value[valuecounter+1] = newEntry;
+                            value.add(newEntry);
                             mAdapter.notifyDataSetChanged();
 
                         }
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        public class GetData extends AsyncTask<String,Integer,String[]> {
+        public class GetData extends AsyncTask<String,Integer,ArrayList<String>> {
             private String TAG = "GetData";
             @Override
             protected void onPreExecute() {
@@ -232,17 +232,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onPostExecute(String[] strings) {
+            protected void onPostExecute(ArrayList<String> strings) {
 
                 mAdapter = new Adapter(strings);
                 mRecyclerView.setAdapter(mAdapter);
                 value = strings;
-                valuecounter = 2;
                 super.onPostExecute(strings);
             }
 
             @Override
-            protected String[] doInBackground(String... params) {
+            protected ArrayList<String> doInBackground(String... params) {
 
                 HttpURLConnection urlConnection = null;
                 BufferedReader reader = null;
@@ -295,29 +294,31 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 try {
-                    ParseType(item_data);
+                    //ParseType(item_data);
                     return ParseJSON(item_data);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                return new String[0];
+                return new ArrayList<>();
             }
+
+            //Fix up later
 
             public String[] ParseType(String rawData) throws JSONException{
                 String key = "data";
                 if(rawData != null) {
                     JSONObject Obj = new JSONObject(rawData);
                     JSONArray Arr = Obj.getJSONArray(key);
-                    String[] parsedData = new String[20];
+                    ArrayList<String> parsedData = new ArrayList<String>();
 
                     for (int i = 0; i < Arr.length(); i++) {
                         JSONObject object = Arr.getJSONObject(i);
                         String temp = object.getString("state");
-                        parsedData[i] = temp;
+                        parsedData.add(i,temp);
                         Log.d(TAG, temp);
                     }
-                    IDs = parsedData;
-                    return parsedData;
+                    //IDs = parsedData;
+                    //return parsedData;
                 }
                 return new String[0];
             }
@@ -325,23 +326,23 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-            public String[] ParseJSON(String rawData) throws JSONException{
+            public ArrayList<String> ParseJSON(String rawData) throws JSONException{
 
                 String key = "data";
                 if(rawData != null) {
                     JSONObject Obj = new JSONObject(rawData);
                     JSONArray Arr = Obj.getJSONArray(key);
-                    String[] parsedData = new String[20];
+                    ArrayList<String> parsedData = new ArrayList<String>();
 
                     for (int i = 0; i < Arr.length(); i++) {
                         JSONObject object = Arr.getJSONObject(i);
                         String temp = object.getString("name");
-                        parsedData[i] = temp;
+                        parsedData.add(i,temp);
                         Log.d(TAG, temp);
                     }
                     return parsedData;
                 }
-                return new String[0];
+                return new ArrayList<String>();
             }
 
 
