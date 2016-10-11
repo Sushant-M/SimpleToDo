@@ -124,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
         String item_data = null;
         ArrayList<String> value = new ArrayList<String>();
         ArrayList<String> id = new ArrayList<String>();
+        ArrayList<String> pending = new ArrayList<>();
+        ArrayList<String> done = new ArrayList<>();
         ArrayList<String> final_array = new ArrayList<String>();
         int section_no;
         private String TAG = "Fragment";
@@ -169,8 +171,12 @@ public class MainActivity extends AppCompatActivity {
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             String newEntry = editText.getText().toString();
-                            Log.d(TAG,newEntry);
-                            value.add(newEntry);
+                            if(section_no==1){
+                                pending.add(newEntry);
+                            }else if(section_no==2){
+                                done.add(newEntry);
+                            }
+                            //value.add(newEntry);
                             mAdapter.notifyDataSetChanged();
 
                         }
@@ -249,7 +255,26 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(ArrayList<String> strings) {
-                mAdapter = new Adapter(strings,getActivity());
+
+
+                int n = strings.size();
+                for(int i =0; i<n;i++){
+                    if(id.get(i).equals("0")) {
+                        Log.d(TAG, "pending");
+                        pending.add(strings.get(i));
+
+                    }else if(id.get(i).equals("1")){
+                        Log.d(TAG,"Done");
+                        done.add(strings.get(i));
+                    }
+                }
+
+                if(section_no==1){
+                    mAdapter = new Adapter(pending,getActivity());
+                }else if(section_no==2){
+                    mAdapter = new Adapter(done,getActivity());
+                }
+
                 mRecyclerView.setAdapter(mAdapter);
                 value = strings;
                 if(mSwipeRefreshLayout.isRefreshing()){
@@ -339,8 +364,6 @@ public class MainActivity extends AppCompatActivity {
             }
             }
 
-
-
             public ArrayList<String> ParseJSON(String rawData) throws JSONException{
 
                 String key = "data";
@@ -357,7 +380,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     return parsedData;
                 }
-                return new ArrayList<String>();
+                return new ArrayList<>();
             }
 
 
