@@ -121,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
          * fragment.
          */
         String item_data = null;
-        ArrayList<String> value = new ArrayList<String>();
-        ArrayList<String> id = new ArrayList<String>();
+        ArrayList<String> value = new ArrayList<>();
+        ArrayList<String> id = new ArrayList<>();
         ArrayList<String> pending = new ArrayList<>();
         ArrayList<String> done = new ArrayList<>();
         ProgressBar progressBar;
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(ArrayList<String> strings) {
-                progressBar.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.GONE);
                 done.clear();
                 pending.clear();
                 int n = strings.size();

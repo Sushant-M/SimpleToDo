@@ -7,7 +7,7 @@ import android.provider.BaseColumns;
  */
 
 public class ItemsContract implements BaseColumns {
-    public static final String TABLE_NAME = "movies";
+    public static final String TABLE_NAME = "todo";
     public static final String COLUMN_ITEM_NAME = "name";
     public static final String COLUMN_ITEM_STATUS = "status";
 
