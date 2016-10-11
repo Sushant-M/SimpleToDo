@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import static android.R.attr.version;
+
 /**
  * Created by sushant on 11/10/16.
  */
@@ -25,8 +27,8 @@ public class ItemDatabase extends SQLiteOpenHelper {
     private static final String DELETE_TABLE =
             "DROP TABLE IF EXISTS " + ItemsContract.TABLE_NAME;
 
-    public ItemDatabase(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public ItemDatabase(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override

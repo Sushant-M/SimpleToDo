@@ -1,7 +1,10 @@
 package com.example.sushant.simpletodo;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
@@ -32,6 +35,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.example.sushant.simpletodo.data.ItemDatabase;
+import com.example.sushant.simpletodo.data.ItemsContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -79,14 +85,6 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
 
     }
 
@@ -260,9 +258,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(ArrayList<String> strings) {
-
                 progressBar.setVisibility(View.INVISIBLE);
-
                 done.clear();
                 pending.clear();
                 int n = strings.size();
@@ -289,6 +285,7 @@ public class MainActivity extends AppCompatActivity {
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
                 super.onPostExecute(strings);
+                new WriteToDatabase().execute();
             }
 
             @Override
@@ -391,6 +388,24 @@ public class MainActivity extends AppCompatActivity {
                 return new ArrayList<>();
             }
 
+        public class WriteToDatabase extends AsyncTask<ArrayList<String>,Void,Void>{
+            @Override
+            protected Void doInBackground(ArrayList<String>... params) {
+                SQLiteOpenHelper sqLiteOpenHelper = new ItemDatabase(getContext());
+                SQLiteDatabase sqLiteDatabase = sqLiteOpenHelper.getWritableDatabase();
+
+                ContentValues contentValues = new ContentValues();
+                for (int i = 0; i<value.size();i++) {
+                    contentValues.put(ItemsContract.COLUMN_ITEM_NAME, value.get(i));
+                    contentValues.put(ItemsContract.COLUMN_ITEM_STATUS,id.get(i));
+                }
+
+                long no = sqLiteDatabase.insert(ItemsContract.TABLE_NAME,
+                        null,
+                        contentValues);
+                return null;
+            }
+        }
 
     }
 
