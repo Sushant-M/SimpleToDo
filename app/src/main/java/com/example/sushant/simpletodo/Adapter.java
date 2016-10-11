@@ -3,6 +3,7 @@ package com.example.sushant.simpletodo;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 /**
  * Created by sushant on 10/10/16.
@@ -23,19 +26,19 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     private Context context;
     private ArrayList<String> mDataSet;
+    static final int TIME_OUT = 5000;
+    private AlertDialog mAlertDialog;
+    private Handler mHandler;
+    static final int MSG_DISMISS_DIALOG = 0;
+    private int section_no;
+    MainActivity.PlaceholderFragment placeholderFragment;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
 
+
         public ViewHolder(View v) {
             super(v);
-            // Define click listener for the ViewHolder's View.
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
-                }
-            });
             textView = (TextView) v.findViewById(R.id.text_item_view);
         }
 
@@ -45,9 +48,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     }
 
 
-    public Adapter(ArrayList<String> dataSet, Context con) {
+    public Adapter(ArrayList<String> dataSet, Context con, int sec ) {
         mDataSet = dataSet;
         context = con;
+        section_no=sec;
+
     }
     public View v;
 
@@ -62,6 +67,14 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         viewHolder.getTextView().setText(mDataSet.get(position));
+
+        viewHolder.textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String toSwap = mDataSet.get(position);
+
+            }
+        });
 
         viewHolder.textView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

@@ -225,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
             if(section_no == 2){
                 text.setText("Done Tasks");
             }
+
             mSwipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.swiperefresh);
             mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -241,6 +242,19 @@ public class MainActivity extends AppCompatActivity {
             new GetData().execute();
         }
 
+
+
+        public void swap(String hello){
+            if(section_no== 1){
+                done.add(hello);
+                done.remove(done.size());
+            }else
+                if(section_no==2){
+                    pending.add(hello);
+                    pending.remove(pending.size());
+                }
+
+        }
 
         public class GetData extends AsyncTask<String,Integer,ArrayList<String>> {
             private String TAG = "GetData";
@@ -274,9 +288,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if(section_no==1){
-                    mAdapter = new Adapter(pending,getActivity());
+                    mAdapter = new Adapter(pending,getActivity(),section_no);
                 }else if(section_no==2){
-                    mAdapter = new Adapter(done,getActivity());
+                    mAdapter = new Adapter(done,getActivity(),section_no);
                 }
 
                 mRecyclerView.setAdapter(mAdapter);
@@ -406,6 +420,7 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
         }
+
 
     }
 
