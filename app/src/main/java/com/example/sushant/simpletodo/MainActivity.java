@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
@@ -216,7 +217,6 @@ public class MainActivity extends AppCompatActivity {
             progressBar = (ProgressBar)rootView.findViewById(R.id.pbar);
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
             mRecyclerView.setLayoutManager(mLayoutManager);
-
 
             TextView text = (TextView)rootView.findViewById(R.id.type);
             if(section_no == 1){

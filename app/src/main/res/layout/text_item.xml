@@ -8,5 +8,8 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     android:textSize="20dp"
-    android:id="@+id/text_item_view"/>
+    android:id="@+id/text_item_view"
+    android:padding="7dp"
+    />
+
 </LinearLayout>

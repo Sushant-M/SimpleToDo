@@ -29,6 +29,10 @@
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:padding="10dp"
+        android:background="?android:attr/selectableItemBackground"
+
         />
     <Button
         android:layout_width="wrap_content"
