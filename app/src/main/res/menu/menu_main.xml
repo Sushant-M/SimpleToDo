@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.example.sushant.simpletodo.MainActivity">
+    <item
+        android:id="@+id/action_add"
+        android:orderInCategory="100"
+        android:title="@string/add_entry"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_add_black_24dp"/>
+</menu>
